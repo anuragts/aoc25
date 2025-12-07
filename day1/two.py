@@ -1,13 +1,3 @@
-"""
-Dial starts at 50
-L means to go to left
-R means to go to right
-Dial has number from 0 to 99
-and if we got left of 0 then we will start from 99 as its circle, same for opposite 99 -> 0
-We need to find password that is times dial is left pointing at 0. aka [0,0,0] -> 3 is password
-"""
-
-
 case = """
 L68
 L30
@@ -24,11 +14,12 @@ L82
 
 def rotate(direction: str , num_to_move, current_position):
     c = current_position
-    times_loop_moved = 0
+    times_0 = 0
     if direction == 'L':
         for i in range(0, num_to_move):
-            times_loop_moved += 1
             c = c - 1
+            if c == 0:
+                times_0 = times_0 + 1
             if c < 0:
                 c = 99
     if direction == 'R':
@@ -36,14 +27,16 @@ def rotate(direction: str , num_to_move, current_position):
             c = c + 1
             if c > 99:
                 c = 0
+            if c == 0:
+                times_0 = times_0 + 1
 
-    return c
+    return c,times_0
 
 def solution(case):
     from utils import parse_input
     clean_input = parse_input(case)
     current_position = 50
-    no_of_times_reached = 0
+    output = 0
     times_run = 0
     for i in clean_input:
         times_run = times_run + 1
@@ -51,11 +44,10 @@ def solution(case):
         clean = i.removeprefix("L")
         clean = clean.removeprefix("R")
         num_to_move = int(clean)
-        output = rotate(direction, num_to_move, current_position)
-        current_position = output
-        if output == 0:
-            no_of_times_reached += 1
+        c, o =  rotate(direction, num_to_move, current_position)
+        current_position = c
+        output = output + o
 
-    print(no_of_times_reached)
+    print(output)
 
 solution(case)
